@@ -54,7 +54,7 @@ public class MLWDServer {
 			switch (args[0]) {
 			case "checkfolder": {
 				try {
-					File file = new File(MainBungee.folder + fs + args[1].replace("/", fs));
+					File file = new File(MLPack.folder + fs + args[1].replace("/", fs));
 					dFunctions.debug("§eChecking folder: " + file);
 					if (file.exists()) return "true";
 				} catch (Throwable t) {
@@ -66,7 +66,7 @@ public class MLWDServer {
 			
 			case "checkworld": {
 				try {
-					File file = new File(MainBungee.folder + fs + args[1].replace("/", fs) + fs + args[2]);
+					File file = new File(MLPack.folder + fs + args[1].replace("/", fs) + fs + args[2]);
 					dFunctions.debug("§eChecking world: " + file);
 					if (file.exists()) return "true";
 				} catch (Throwable t) {
@@ -77,7 +77,7 @@ public class MLWDServer {
 			
 			case "getworldfilelastmodified": {
 				try {
-					File file = new File(MainBungee.folder + fs + args[1].replace("/", fs) + fs + args[2] + fs + args[3].replace("/", fs));
+					File file = new File(MLPack.folder + fs + args[1].replace("/", fs) + fs + args[2] + fs + args[3].replace("/", fs));
 					if (file.exists()) return file.lastModified()+"";
 				} catch (Throwable t) {
 					t.printStackTrace();
@@ -87,7 +87,7 @@ public class MLWDServer {
 			
 			case "getworldfiles":{
 				try {
-					File file = new File(MainBungee.folder + fs + args[1].replace("/", fs) + fs + args[2]);
+					File file = new File(MLPack.folder + fs + args[1].replace("/", fs) + fs + args[2]);
 					String str = ""; int g = (file+"").length()+1;
 					List<File> files = getListOfWorldFiles(file);
 					for (File f : files) {
@@ -102,7 +102,7 @@ public class MLWDServer {
 			}
 			
 			case "startworldfiledownloading": {
-				File world = new File(MainBungee.folder + fs + args[1].replace("/", fs) + fs + args[2] + fs + args[3].replace("/", fs));
+				File world = new File(MLPack.folder + fs + args[1].replace("/", fs) + fs + args[2] + fs + args[3].replace("/", fs));
 				dFunctions.debug("§eServer tries download world: " + world);
 				if (!world.exists()) return "-1";
 				try {

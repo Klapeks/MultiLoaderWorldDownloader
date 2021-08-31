@@ -20,7 +20,7 @@ public class ConfigBukkit {
 	
 	public static void __init__() {
 		try {
-			File file = new File(MainBukkit.bukkit.getDataFolder() + fs + "config.yml");
+			File file = new File(MLPack.getDataFolder() + fs + "config.yml");
 			
 			if (!file.exists()) try { 
 				file.getParentFile().mkdirs(); 

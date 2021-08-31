@@ -25,7 +25,7 @@ public class BukkitWorldList {
 	static void __init__() {
 		try {
 			isStartup = true;
-			File file = new File(MainBukkit.bukkit.getDataFolder() + fs + "list.yml");
+			File file = new File(MLPack.getDataFolder() + fs + "list.yml");
 			if (!file.exists()) {
 				file.getParentFile().mkdirs();
 				file.createNewFile();
@@ -53,9 +53,9 @@ public class BukkitWorldList {
 				lFunctions.log("---------------" + folder + " - " + fc.isList(folder) + " - " + MLWD.hasFolder(folder));
 				if (fc.isList(folder) && MLWD.hasFolder(folder)) {
 					List<?> list = fc.getList(folder);
-					WorldFolder pf = MLWD.from(folder);
-					list.forEach(plugin -> {
-						pf.using(plugin+"");
+					WorldFolder wf = MLWD.from(folder);
+					list.forEach(world -> {
+						wf.using(world+"");
 					});
 				}
 			}

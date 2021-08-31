@@ -124,7 +124,7 @@ public class MLWD {
 				lFunctions.log("§cWorld §6'{world}'§c wasn't found!".replace("{world}", world));
 				return this;
 			}
-			lFunctions.log("---World " + world + " was found, starting downloadig");
+			lFunctions.log("---World " + world + " was found, starting updating");
 			String[] files = get_files(world);
 			for (String file : files) {
 				update_part(world, file);

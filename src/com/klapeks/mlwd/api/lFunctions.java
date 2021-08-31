@@ -5,6 +5,7 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 
 import com.klapeks.coserver.dFunctions;
 import com.klapeks.mlwd.bukkit.BukkitWorldList;
@@ -12,7 +13,7 @@ import com.klapeks.mlwd.bukkit.MainBukkit;
 
 public class lFunctions {
 	
-	public static String prefix = "[MLPD] ";
+	public static String prefix = "[MLWD] ";
 	public static void log(Object obj) {
 		dFunctions.log_(prefix + obj);
 	}
@@ -58,20 +59,21 @@ public class lFunctions {
 	
 	public static void enableWorld(String path) {
 		File folder = new File("worlds_MLWD" + File.separator + path.replace("/", File.separator));
-		if (!new File(folder, "level.dat").exists()) {
-			log("§clevel.dat file in §6{world}§c wasn't found".replace("{world}", folder+""));
-			throw new RuntimeException("level.dat of " + folder + " is not exist");
-		}
 		try {
+			if (!new File(folder, "level.dat").exists()) {
+				log("§clevel.dat file in §6{world}§c wasn't found".replace("{world}", folder+""));
+				throw new RuntimeException("level.dat of " + folder + " is not exist");
+			}
 			WorldCreator wc = WorldCreator.name(folder+"");
-			World world = wc.createWorld();
+//			World world = wc.createWorld();
+			World world = Bukkit.createWorld(wc);
 		} catch (Exception e) {
-			Bukkit.getLogger().info("§cWorld §6" + folder + "§c didn't want to load");
+			lFunctions.log("§cWorld §6" + folder + "§c didn't want to load");
+			e.printStackTrace();
 			if (BukkitWorldList.DISABLE_BUKKIT_ON_WORLD_ERROR) {
 				Bukkit.shutdown();
 				return;
 			}
-			throw new RuntimeException(e);
 		}
 	}
 }

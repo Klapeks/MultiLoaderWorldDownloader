@@ -25,11 +25,11 @@ public class BukkitListener implements Listener {
 		msg = msg.replaceFirst(cmd+" ", "");
 		cmd = cmd.replaceFirst("/", "");
 		switch (cmd) {
-		case "worldtp": {
+		case "mlwd_worldtp": {
 			e.getPlayer().teleport(Bukkit.getWorld(msg).getSpawnLocation());
 			return;
 		}
-		case "worlds": {
+		case "mlwd_worlds": {
 			for (World w : Bukkit.getWorlds()) {
 				e.getPlayer().sendMessage(w.getName());
 			}
