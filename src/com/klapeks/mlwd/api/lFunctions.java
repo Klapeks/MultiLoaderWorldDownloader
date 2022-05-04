@@ -5,11 +5,9 @@ import java.io.File;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 
+import com.klapeks.coserver.aConfig;
 import com.klapeks.coserver.dFunctions;
-import com.klapeks.mlwd.bukkit.BukkitWorldList;
-import com.klapeks.mlwd.bukkit.MainBukkit;
 
 public class lFunctions {
 	
@@ -17,7 +15,6 @@ public class lFunctions {
 	public static void log(Object obj) {
 		dFunctions.log_(prefix + obj);
 	}
-	
 
 //	public static int getRandom(int from, int to) {
 //		return getRandom(new Random(), from, to);
@@ -70,8 +67,9 @@ public class lFunctions {
 		} catch (Exception e) {
 			lFunctions.log("§cWorld §6" + folder + "§c didn't want to load");
 			e.printStackTrace();
-			if (BukkitWorldList.DISABLE_BUKKIT_ON_WORLD_ERROR) {
-				Bukkit.shutdown();
+			if (aConfig.shutdownOnError) {
+				lFunctions.log("§cServer will be disabled, to prevent further errors");
+				dFunctions.shutdown();
 				return;
 			}
 		}

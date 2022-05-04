@@ -6,11 +6,11 @@ import java.nio.file.Files;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
+import com.klapeks.coserver.Coserver;
 import com.klapeks.coserver.aConfig;
-import com.klapeks.coserver.dCoserver;
-import com.klapeks.coserver.dRSA;
+import com.klapeks.coserver.dFunctions;
+import com.klapeks.funcs.dRSA;
 import com.klapeks.mlwd.bukkit.BukkitWorldList;
-import com.klapeks.mlwd.bukkit.ConfigBukkit;
 
 public class MLWD {
 	private static World defaultWorld = null;
@@ -31,9 +31,10 @@ public class MLWD {
 		if (defaultWorld==null) defaultWorld = getDefWorld(lConfig.bukkit.limboWorld);
 		if (defaultWorld==null) {
 			lFunctions.log("§cMLWD can't find default nor limbo worlds :(");
-			if (BukkitWorldList.DISABLE_BUKKIT_ON_WORLD_ERROR) {
-				Bukkit.shutdown();
-				throw new RuntimeException("MLWD can't find default nor limbo worlds");
+			if (aConfig.shutdownOnError) {
+				lFunctions.log("§cServer will be disabled, to prevent further errors");
+				dFunctions.shutdown();
+				return null;
 			}
 			defaultWorld = Bukkit.getWorlds().get(0);
 		}
@@ -105,11 +106,11 @@ public class MLWD {
 					BukkitWorldList.needsToBeEnabled.add(folder+",,,"+world);
 				}
 			} catch (Throwable t) {
-				if (BukkitWorldList.DISABLE_BUKKIT_ON_WORLD_ERROR) {
-					Bukkit.shutdown();
-					return null;
-				}
 				t.printStackTrace();
+				if (aConfig.shutdownOnError) {
+					lFunctions.log("§cServer will be disabled, to prevent further errors");
+					dFunctions.shutdown();
+				}
 			}
 			return this;
 		}
@@ -129,7 +130,7 @@ public class MLWD {
 			for (String file : files) {
 				update_part(world, file);
 			}
-			closeLarge();
+//			closeLarge();
 			return this;
 		}
 		protected WorldFolder update_part(String world, String filepath) {
@@ -152,17 +153,17 @@ public class MLWD {
 			for (String file : files) {
 				download_part(world, file);
 			}
-			closeLarge();
+//			closeLarge();
 			return this;
 		}
 		
 		protected WorldFolder download_part(String world, String filepath) {
 			lFunctions.log("-- Prepare to download part");
 			//Prepare to file downloading
-			String secretPsw = sendLarge("startworldfiledownloading", folder, world, filepath);
+			String secretPsw = send("startworldfiledownloading", folder, world, filepath);
 			int size = lFunctions.toInt(secretPsw.split(" ")[0]);
 			if (secretPsw.equals("-1") || size==-1) {
-				closeLarge();
+//				closeLarge();
 				lFunctions.log("§cWorld file §6'{wf}'§c was found but no?".replace("{wf}", folder+"/"+world+"/"+filepath));
 				return this;
 			}
@@ -176,7 +177,7 @@ public class MLWD {
 				int old_proc = 0, new_one = 0;
 				
 				for (int i = 0; i < size; i++) {
-					g = sendLarge("downloadworldfilestage", secretPsw, i+"");
+					g = send("downloadworldfilestage", secretPsw, i+"");
 					if (g==null || g.equals("null")) {
 						lFunctions.log("§cSomething went wrong. On iterator: " + i);
 						return this;
@@ -208,36 +209,22 @@ public class MLWD {
 		}
 		
 		public String[] get_files(String world) {
-			String s = sendLarge("getworldfiles", folder, world);
+			String s = send("getworldfiles", folder, world);
 			if ((s+"").equals("null")) return null;
 			return s.split(",,,,,,,,");
 		}
 	}
-	
+	static Coserver coserver;
 	private static String send(String cmd, String... args) {
+		if (coserver==null) {
+			coserver = Coserver.newCordServer();
+			coserver.open();
+		}
 		cmd = dRSA.base64_encode(cmd);
 		for (String arg : args) {
 			cmd += " " + dRSA.base64_encode(arg);
 		}
-		if (aConfig.useSecurity) {
-			return dCoserver.securitySend(aConfig.bukkit.ip, aConfig.bukkit.port, "multiloaderworlddownloader " + cmd, false);
-		} else {
-			return dCoserver.send(aConfig.bukkit.ip, aConfig.bukkit.port, "multiloaderworlddownloader " + cmd, false);
-		}
+		return coserver.send(aConfig.useSecurity, "multiloaderworlddownloader " + cmd);
 	}
 	
-	private static String sendLarge(String cmd, String... args) {
-		cmd = dRSA.base64_encode(cmd);
-		for (String arg : args) {
-			cmd += " " + dRSA.base64_encode(arg);
-		}
-		if (aConfig.useSecurity) {
-			return dCoserver.securitySend(aConfig.bukkit.ip, aConfig.bukkit.port, "multiloaderworlddownloader " + cmd, true);
-		} else {
-			return dCoserver.send(aConfig.bukkit.ip, aConfig.bukkit.port, "multiloaderworlddownloader " + cmd, true);
-		}
-	}
-	private static void closeLarge() {
-		dCoserver.closeLarge(aConfig.bukkit.ip, aConfig.bukkit.port);
-	}
 }

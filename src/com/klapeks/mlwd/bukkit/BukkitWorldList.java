@@ -5,17 +5,16 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import com.klapeks.coserver.aConfig;
+import com.klapeks.coserver.dFunctions;
 import com.klapeks.mlwd.api.MLWD;
 import com.klapeks.mlwd.api.MLWD.WorldFolder;
 import com.klapeks.mlwd.api.lFunctions;
 
 public class BukkitWorldList {
-	
-	public static boolean DISABLE_BUKKIT_ON_WORLD_ERROR = false;
 	
 	public static boolean isStartup = false;
 	public static List<String> needsToBeEnabled = new ArrayList<>();
@@ -25,7 +24,7 @@ public class BukkitWorldList {
 	static void __init__() {
 		try {
 			isStartup = true;
-			File file = new File(MLPack.getDataFolder() + fs + "list.yml");
+			File file = new File(MainBukkit.dataFolder() + fs + "list.yml");
 			if (!file.exists()) {
 				file.getParentFile().mkdirs();
 				file.createNewFile();
@@ -69,11 +68,13 @@ public class BukkitWorldList {
 				lFunctions.enableWorld(folder$world.replace(",,,", File.separator));
 				MLWD._addEnabled(folder$world.split(",,,")[0], folder$world.split(",,,")[1]);
 			} catch (Throwable t) {
-				if (DISABLE_BUKKIT_ON_WORLD_ERROR) {
-					Bukkit.shutdown();
+				t.printStackTrace();
+				if (aConfig.shutdownOnError) {
+					lFunctions.log("§cServer will be disabled, to prevent further errors");
+					dFunctions.shutdown();
 					return;
 				}
-				throw new RuntimeException(t);
+//				throw new RuntimeException(t);
 			}
 		}
 		isStartup = false;

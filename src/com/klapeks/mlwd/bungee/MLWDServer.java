@@ -10,12 +10,13 @@ import java.util.function.Function;
 
 import com.klapeks.coserver.aConfig;
 import com.klapeks.coserver.dFunctions;
-import com.klapeks.coserver.dRSA;
-import com.klapeks.coserver.plugin.bungee.BungeeCoserv;
+import com.klapeks.coserver.plugin.bungee.SuperCoServer;
+import com.klapeks.funcs.dRSA;
 import com.klapeks.mlwd.api.lFunctions;
 
 public class MLWDServer {
-	
+
+	static File mlwd_folder = null;
 //	public static void main(String[] args) {
 //		System.out.println(dRSA.generateSecretKey(3));
 //	}
@@ -54,7 +55,7 @@ public class MLWDServer {
 			switch (args[0]) {
 			case "checkfolder": {
 				try {
-					File file = new File(MLPack.folder + fs + args[1].replace("/", fs));
+					File file = new File(mlwd_folder + fs + args[1].replace("/", fs));
 					dFunctions.debug("§eChecking folder: " + file);
 					if (file.exists()) return "true";
 				} catch (Throwable t) {
@@ -66,7 +67,7 @@ public class MLWDServer {
 			
 			case "checkworld": {
 				try {
-					File file = new File(MLPack.folder + fs + args[1].replace("/", fs) + fs + args[2]);
+					File file = new File(mlwd_folder + fs + args[1].replace("/", fs) + fs + args[2]);
 					dFunctions.debug("§eChecking world: " + file);
 					if (file.exists()) return "true";
 				} catch (Throwable t) {
@@ -77,7 +78,7 @@ public class MLWDServer {
 			
 			case "getworldfilelastmodified": {
 				try {
-					File file = new File(MLPack.folder + fs + args[1].replace("/", fs) + fs + args[2] + fs + args[3].replace("/", fs));
+					File file = new File(mlwd_folder + fs + args[1].replace("/", fs) + fs + args[2] + fs + args[3].replace("/", fs));
 					if (file.exists()) return file.lastModified()+"";
 				} catch (Throwable t) {
 					t.printStackTrace();
@@ -87,7 +88,7 @@ public class MLWDServer {
 			
 			case "getworldfiles":{
 				try {
-					File file = new File(MLPack.folder + fs + args[1].replace("/", fs) + fs + args[2]);
+					File file = new File(mlwd_folder + fs + args[1].replace("/", fs) + fs + args[2]);
 					String str = ""; int g = (file+"").length()+1;
 					List<File> files = getListOfWorldFiles(file);
 					for (File f : files) {
@@ -102,7 +103,7 @@ public class MLWDServer {
 			}
 			
 			case "startworldfiledownloading": {
-				File world = new File(MLPack.folder + fs + args[1].replace("/", fs) + fs + args[2] + fs + args[3].replace("/", fs));
+				File world = new File(mlwd_folder + fs + args[1].replace("/", fs) + fs + args[2] + fs + args[3].replace("/", fs));
 				dFunctions.debug("§eServer tries download world: " + world);
 				if (!world.exists()) return "-1";
 				try {
@@ -147,9 +148,9 @@ public class MLWDServer {
 			return "404error";
 		};
 		if (aConfig.useSecurity) {
-			BungeeCoserv.addSecurityHandler("multiloaderworlddownloader", minihandler);
+			SuperCoServer.BungeeCoserv.addSecurityHandler("multiloaderworlddownloader", minihandler);
 		} else {
-			BungeeCoserv.addHandler("multiloaderworlddownloader", minihandler);
+			SuperCoServer.BungeeCoserv.addHandler("multiloaderworlddownloader", minihandler);
 		}
 	}
 	private static List<File> getListOfWorldFiles(File world) {
