@@ -74,4 +74,7 @@ public class lFunctions {
 			}
 		}
 	}
+	public static void onDisable() {
+		MLWD.coserver.close();
+	}
 }

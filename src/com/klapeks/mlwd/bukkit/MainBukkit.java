@@ -41,6 +41,7 @@ public class MainBukkit extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		lFunctions.log("§cMultiLoaderWorldDownloader is disabling");
+		lFunctions.onDisable();
 	}
 
 }
